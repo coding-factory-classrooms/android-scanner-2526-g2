@@ -2,6 +2,8 @@ package com.example.scanner
 
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.nfc.tech.MifareClassic
+import android.nfc.tech.MifareUltralight
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import android.util.Log
@@ -44,24 +46,25 @@ class MainActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
     override fun onTagDiscovered(tag: Tag?) {
         Log.d("NFC", "Tag détecté : $tag")
 
-        val ndef = Ndef.get(tag)
+        val ultra = MifareUltralight.get(tag)
+        if (ultra != null) {
+            try {
+                ultra.connect()
+                var page = 0
 
-        if(ndef!= null){
-            ndef.connect()
+                    val data = ultra.readPages(page).copyOfRange(0,4) // returns 16 bytes (4 pages)
+                Log.d("ULTRALIGHT", data.joinToString("") { "%02X".format(it) })
+                    // print each page (4 bytes)
 
-            val ndefMessage = ndef.cachedNdefMessage
-            val records = ndefMessage.records
-            for (record in records){
-                val payload = record.payload
+ // readPages reads 4 pages at once
 
-                val text: String = payload.toString()
-
-                Log.d("NFC","Nfc data found: $text")
+                ultra.close()
+            } catch (e: Exception) {
+                Log.e("ULTRALIGHT", "Ultralight read error", e)
+                try { ultra.close() } catch (_: Exception) {}
             }
-            ndef.close()
-
-        }else{
-            Log.d("Error", "Ndef info not found")
+        } else {
+            Log.d("ULTRALIGHT", "Tag is not MIFARE Ultralight")
         }
     }
 }

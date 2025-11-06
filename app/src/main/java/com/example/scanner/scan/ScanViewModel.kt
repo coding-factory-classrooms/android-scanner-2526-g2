@@ -1,12 +1,14 @@
 package com.example.scanner.scan
 
+import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.nfc.tech.MifareUltralight
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import com.example.scanner.Amiibo
 import io.paperdb.Paper
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,9 +21,17 @@ import java.util.Calendar
 
 class ScanViewModel : ViewModel() {
 
+    var isSimulationEnabled = true
+
+    private val _scanResult = MutableStateFlow<String?>(null)
+    val scanResult: StateFlow<String?> = _scanResult
+
+    private val _amiiboState = MutableStateFlow<Amiibo?>(null)
+    val amiiboState: StateFlow<Amiibo?> = _amiiboState
+
     interface AmiiboApi {
         @GET("{uid}")
-        fun getAmiiboById(@Path("uid") uid: String): Call   <Amiibo>
+        fun getAmiiboById(@Path("uid") uid: String): Call<Amiibo>
     }
 
     private val retrofit = Retrofit.Builder()
@@ -31,14 +41,30 @@ class ScanViewModel : ViewModel() {
 
     private val api = retrofit.create(AmiiboApi::class.java)
 
-    private val _amiiboState = MutableStateFlow<Amiibo?>(null)
+    fun onScanButtonClicked() {
+        val result = if (isSimulationEnabled) {
+            "simulation_amiibo"
+        } else {
+            readFromNfc()
+        }
+
+        _scanResult.value = result
+        if (!result.isNullOrEmpty()) {
+            fetchAmiibo(result)
+        }
+    }
+
+    private fun readFromNfc(): String {
+        try {
+            Log.d("NFC", "Lecture NFC activée via ReaderCallback")
+        } catch (e: Exception) {
+            Log.e("NFC", "Erreur lecture NFC : ${e.message}")
+        }
+        return ""
+    }
 
     fun fetchAmiibo(uid: String) {
-        //Allow us to use asynchronous code without blocking the UI
-            val call = api.getAmiiboById(uid)
-
-            //val timestamp = System.currentTimeMillis()
-
+        val call = api.getAmiiboById(uid)
             call.enqueue(object : Callback<Amiibo>{
                 override fun onResponse(
                     call: Call<Amiibo?>,
@@ -46,7 +72,6 @@ class ScanViewModel : ViewModel() {
                 ) {
 
                     var amiibo: Amiibo? = response.body()
-                    //amiibo?.scannedTimestamp = System.currentTimeMillis()
                     _amiiboState.value = amiibo
                     Log.d("Amiibo", amiibo?.name.toString())
                     val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
@@ -67,11 +92,12 @@ class ScanViewModel : ViewModel() {
                     _amiiboState.value = null
                     Log.e("Amiibo", "Error: failed to load db")
                 }
-
             }
-            )
+
+            override fun onFailure(call: Call<Amiibo>, t: Throwable) {
+                _amiiboState.value = null
+                Log.e("Amiibo", "Erreur API : ${t.message}", t)
+            }
+        })
     }
 }
-
-// Get current timestamp
-//Paper.book().write("timestampKey", timestamp)

@@ -31,17 +31,22 @@ import java.util.Date
 
 
 @Composable
-fun AmiiboListScreen(viewModel: AmiiboListViewModel){
+fun AmiiboListScreen(viewModel: AmiiboListViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Executed only when the key param changes
-    // Unit == only once at the beginning
     LaunchedEffect(Unit) {
         println("MovieListScreen: LaunchedEffect")
         viewModel.loadAmiibos()
     }
 
-    Scaffold {innerPadding ->
+
+    LaunchedEffect(uiState) {
+        if (uiState is AmiiboListUiState.Success) {
+            viewModel.loadAmiibos()
+        }
+    }
+
+    Scaffold { innerPadding ->
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -49,7 +54,6 @@ fun AmiiboListScreen(viewModel: AmiiboListViewModel){
         ) {
             AmiiboListBody(uiState)
         }
-
     }
 }
 
@@ -74,7 +78,25 @@ fun AmiiboListBody(uiState: AmiiboListUiState) {
             ) {
                 AmiiboList(amiibos = uiState.amiibos)
             }
-        is AmiiboListUiState.Error -> TODO()
+
+        is AmiiboListUiState.Empty ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No Amiibos found")
+            }
+
+        is AmiiboListUiState.Error ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Erreur : ${uiState.message}",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
     }
 }
 
@@ -83,9 +105,8 @@ fun AmiiboListBody(uiState: AmiiboListUiState) {
 fun AmiiboList(amiibos: List<Amiibo>) {
     LazyColumn {
         items(amiibos) { amiibo ->
-            AmiiboCard( amiibo = amiibo)
+            AmiiboCard(amiibo = amiibo)
         }
-
     }
 }
 
@@ -105,7 +126,6 @@ fun AmiiboCard(amiibo: Amiibo) {
             Text(text = amiibo.name, style = MaterialTheme.typography.bodyMedium)
             Text(text= amiibo.scannedTimestamp.toString())
         }
-
     }
 }
 

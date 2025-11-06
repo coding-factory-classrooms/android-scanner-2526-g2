@@ -17,3 +17,9 @@ data class AmiiboHistory (
     val uid: String
 )
 
+val sampleAmiibos = listOf(
+    AmiiboHistory("Super Smash Bros", "https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","092938"),
+    AmiiboHistory("Super Smash Bros", "https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","092938"),
+    AmiiboHistory("Super Smash Bros", "https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","092938"),
+    AmiiboHistory("Super Smash Bros", "https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","092938"),
+)

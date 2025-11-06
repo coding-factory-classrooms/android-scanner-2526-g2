@@ -1,5 +1,8 @@
 [versions]
+paperdb = "2.7.2"
+retrofit = "2.9.0"
 agp = "8.13.0"
+coilCompose = "3.3.0"
 coreTesting = "2.2.0"
 kotlin = "2.2.21"
 coreKtx = "1.17.0"
@@ -14,9 +17,13 @@ mockitoCore = "5.20.0"
 turbine = "1.2.1"
 
 [libraries]
+paperdb = { module = "io.github.pilgr:paperdb", version.ref = "paperdb" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

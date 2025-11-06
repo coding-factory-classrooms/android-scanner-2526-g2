@@ -32,8 +32,6 @@ import com.example.scanner.sampleAmiibos
 fun AmiiboListScreen(viewModel: AmiiboListViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Executed only when the key param changes
-    // Unit == only once at the beginning
     LaunchedEffect(Unit) {
         println("MovieListScreen: LaunchedEffect")
         viewModel.loadAmiibos()

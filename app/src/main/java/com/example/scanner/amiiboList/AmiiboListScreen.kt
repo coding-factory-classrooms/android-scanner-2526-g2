@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.scanner.Amiibo
 import com.example.scanner.sampleAmiibos
+import java.sql.Timestamp
+import java.util.Date
 
 
 @Composable
@@ -122,12 +124,14 @@ fun AmiiboCard(amiibo: Amiibo) {
         Column {
             Text(text = amiibo.gameSeries, style = MaterialTheme.typography.titleSmall)
             Text(text = amiibo.name, style = MaterialTheme.typography.bodyMedium)
+            Text(text= amiibo.scannedTimestamp.toString())
         }
     }
 }
 
-@Preview
-@Composable
-fun AmiiboListScreenPreview() {
-    AmiiboListScreen(viewModel = AmiiboListViewModel())
-}
+
+//@Preview
+//@Composable
+//fun AmiiboListScreenPreview(){
+//    AmiiboListScreen(viewModel = AmiiboListViewModel())
+//}

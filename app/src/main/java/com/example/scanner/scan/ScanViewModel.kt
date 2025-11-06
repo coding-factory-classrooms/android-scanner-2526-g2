@@ -16,6 +16,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class ScanViewModel : ViewModel() {
 
@@ -63,19 +65,32 @@ class ScanViewModel : ViewModel() {
 
     fun fetchAmiibo(uid: String) {
         val call = api.getAmiiboById(uid)
+            call.enqueue(object : Callback<Amiibo>{
+                override fun onResponse(
+                    call: Call<Amiibo?>,
+                    response: Response<Amiibo?>
+                ) {
 
-        call.enqueue(object : Callback<Amiibo> {
-            override fun onResponse(call: Call<Amiibo>, response: Response<Amiibo>) {
-                val amiibo = response.body()
-                _amiiboState.value = amiibo
-
-                if (amiibo != null) {
+                    var amiibo: Amiibo? = response.body()
+                    _amiiboState.value = amiibo
+                    Log.d("Amiibo", amiibo?.name.toString())
                     val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
-                    list?.add(amiibo)
-                    Paper.book().write("amiibos", list)
-                    Log.d("Amiibo", "Amiibo ajouté : ${amiibo.name}")
-                } else {
-                    Log.w("Amiibo", "Réponse vide pour UID : $uid")
+                    if (amiibo != null && list != null ){
+                        val time = Calendar.getInstance().time
+                        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm").format(time)
+                        Log.d("Debug", timestamp)
+                        amiibo.scannedTimestamp = timestamp
+                        list.add(amiibo)
+                        Paper.book().write("amiibos", list)
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<Amiibo?>,
+                    t: Throwable
+                ) {
+                    _amiiboState.value = null
+                    Log.e("Amiibo", "Error: failed to load db")
                 }
             }
 

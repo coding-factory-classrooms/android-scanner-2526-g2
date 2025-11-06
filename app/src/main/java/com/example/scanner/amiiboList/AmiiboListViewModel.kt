@@ -1,5 +1,6 @@
 package com.example.scanner.amiiboList
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.scanner.Amiibo
 import io.paperdb.Paper
@@ -13,23 +14,34 @@ sealed class AmiiboListUiState {
     data object Empty : AmiiboListUiState()
 }
 
-class AmiiboListViewModel : ViewModel() {
+
+class AmiiboListViewModel : ViewModel(){
+    val amiibosFlow = MutableStateFlow(listOf<Amiibo>())
+    val uiState = MutableStateFlow<AmiiboListUiState>(AmiiboListUiState.Loading)
 
     private val _uiState = MutableStateFlow<AmiiboListUiState>(AmiiboListUiState.Loading)
     val uiState: StateFlow<AmiiboListUiState> = _uiState
 
     fun loadAmiibos() {
-        try {
-            _uiState.value = AmiiboListUiState.Loading
-            val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
+        uiState.value = AmiiboListUiState.Loading
 
-            _uiState.value = when {
-                list.isEmpty() -> AmiiboListUiState.Empty
-                else -> AmiiboListUiState.Success(list)
-            }
+        uiState.value = AmiiboListUiState.Success(
+            amiibos = Paper.book().read("amiibos", arrayListOf<Amiibo>())!!
+        )
+        amiibosFlow.value = Paper.book().read("amiibos", arrayListOf<Amiibo>())!!
 
-        } catch (e: Exception) {
-            _uiState.value = AmiiboListUiState.Error("Erreur de chargement : ${e.message}")
-        }
+        //try {
+        //   _uiState.value = AmiiboListUiState.Loading
+        //    val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
+
+//            _uiState.value = when {
+  //              list.isEmpty() -> AmiiboListUiState.Empty
+    //            else -> AmiiboListUiState.Success(list)
+      //      }
+
+  //      } catch (e: Exception) {
+    //        _uiState.value = AmiiboListUiState.Error("Erreur de chargement : ${e.message}")
+      //  }
+
     }
 }

@@ -21,7 +21,9 @@ class ScanActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         Paper.init(this)
+        //Paper.book().destroy() // clears database
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         nfcAdapter.enableReaderMode(

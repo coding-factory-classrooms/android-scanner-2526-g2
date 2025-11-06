@@ -35,13 +35,16 @@ class ScanViewModel : ViewModel() {
         //Allow us to use asynchronous code without blocking the UI
             val call = api.getAmiiboById(uid)
 
+            //val timestamp = System.currentTimeMillis()
+
             call.enqueue(object : Callback<Amiibo>{
                 override fun onResponse(
                     call: Call<Amiibo?>,
                     response: Response<Amiibo?>
                 ) {
 
-                    val amiibo: Amiibo? = response.body()
+                    var amiibo: Amiibo? = response.body()
+                    //amiibo?.scannedTimestamp = System.currentTimeMillis()
                     _amiiboState.value = amiibo
                     Log.d("Amiibo", amiibo?.name.toString())
                     val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
@@ -64,3 +67,6 @@ class ScanViewModel : ViewModel() {
             )
     }
 }
+
+// Get current timestamp
+//Paper.book().write("timestampKey", timestamp)

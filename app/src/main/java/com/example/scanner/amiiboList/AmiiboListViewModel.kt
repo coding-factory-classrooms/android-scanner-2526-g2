@@ -1,5 +1,6 @@
 package com.example.scanner.amiiboList
 
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import com.example.scanner.Amiibo
 import io.paperdb.Paper
@@ -12,7 +13,7 @@ sealed class AmiiboListUiState {
 }
 
 class AmiiboListViewModel : ViewModel(){
-    val moviesFlow = MutableStateFlow(listOf<Amiibo>())
+    val amiibosFlow = MutableStateFlow(listOf<Amiibo>())
     val uiState = MutableStateFlow<AmiiboListUiState>(AmiiboListUiState.Loading)
 
 
@@ -23,7 +24,7 @@ class AmiiboListViewModel : ViewModel(){
         uiState.value = AmiiboListUiState.Success(
             amiibos = Paper.book().read("amiibos", arrayListOf<Amiibo>())!!
         )
-        moviesFlow.value = Paper.book().read("amiibos", arrayListOf<Amiibo>())!!
+        amiibosFlow.value = Paper.book().read("amiibos", arrayListOf<Amiibo>())!!
 
     }
 

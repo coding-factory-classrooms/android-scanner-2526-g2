@@ -1,5 +1,6 @@
 package com.example.scanner.scan
 
+import android.app.Activity
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.MifareUltralight
@@ -7,7 +8,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.scanner.Amiibo
+import com.example.scanner.amiiboList.AmiiboListScreen
+import com.example.scanner.amiiboList.AmiiboListViewModel
 import com.example.scanner.ui.theme.ScannerTheme
+import io.paperdb.Paper
 
 class ScanActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
 
@@ -16,7 +21,7 @@ class ScanActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Paper.init(this)
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         nfcAdapter.enableReaderMode(
@@ -28,7 +33,8 @@ class ScanActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
 
         setContent {
             ScannerTheme {
-                ScanScreen(viewModel)
+                //ScanScreen(viewModel)
+                AmiiboListScreen(viewModel = AmiiboListViewModel())
             }
         }
     }

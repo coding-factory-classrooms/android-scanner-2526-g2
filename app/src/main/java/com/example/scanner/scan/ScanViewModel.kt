@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import com.example.scanner.Amiibo
+import io.paperdb.Paper
 import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,9 +40,16 @@ class ScanViewModel : ViewModel() {
                     call: Call<Amiibo?>,
                     response: Response<Amiibo?>
                 ) {
-                    _amiiboState.value = response.body()
-                    val amiibo = response.body()
+
+                    val amiibo: Amiibo? = response.body()
+                    _amiiboState.value = amiibo
                     Log.d("Amiibo", amiibo?.name.toString())
+                    val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
+                    if (amiibo != null && list != null ){
+                        Log.d("Debug", "Entered in the reading")
+                        list.add(amiibo)
+                        Paper.book().write("amiibos", list)
+                    }
                 }
 
                 override fun onFailure(

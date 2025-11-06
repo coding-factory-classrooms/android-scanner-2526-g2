@@ -1,4 +1,5 @@
 [versions]
+paperdb = "2.7.2"
 retrofit = "2.9.0"
 agp = "8.13.0"
 coilCompose = "3.3.0"
@@ -16,6 +17,7 @@ mockitoCore = "5.20.0"
 turbine = "1.2.1"
 
 [libraries]
+paperdb = { module = "io.github.pilgr:paperdb", version.ref = "paperdb" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }

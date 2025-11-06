@@ -14,6 +14,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class ScanViewModel : ViewModel() {
 
@@ -49,7 +51,10 @@ class ScanViewModel : ViewModel() {
                     Log.d("Amiibo", amiibo?.name.toString())
                     val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
                     if (amiibo != null && list != null ){
-                        Log.d("Debug", "Entered in the reading")
+                        val time = Calendar.getInstance().time
+                        val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm").format(time)
+                        Log.d("Debug", timestamp)
+                        amiibo.scannedTimestamp = timestamp
                         list.add(amiibo)
                         Paper.book().write("amiibos", list)
                     }

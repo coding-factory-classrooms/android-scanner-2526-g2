@@ -112,9 +112,18 @@ class ScanViewModel : ViewModel() {
     }
 
     fun loadAmiibos() {
-
         try {
             uiState.value = AmiiboListUiState.Loading
+
+
+            if (isSimulationEnabled) {
+                uiState.value = AmiiboListUiState.Success(
+                    amiibos = ArrayList(com.example.scanner.sampleAmiibos)
+                )
+                return
+            }
+
+
             val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
 
             uiState.value = when {
@@ -125,7 +134,6 @@ class ScanViewModel : ViewModel() {
         } catch (e: Exception) {
             uiState.value = AmiiboListUiState.Error("Erreur de chargement : ${e.message}")
         }
-
     }
 
 

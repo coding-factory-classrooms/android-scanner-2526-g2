@@ -1,28 +1,25 @@
 package com.example.scanner.amiiboDetail
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.scanner.ui.theme.ScannerTheme
 
-class AmiiboDetailActivity: ComponentActivity() {
-
-    private lateinit var viewModel: AmiiboDetailViewModel
+class AmiiboDetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val uid = intent.getStringExtra("uid")
 
-        //We need to create a factory to create a ViewModel with args (uid there)
-        val factory = AmiiboDetailViewModelFactory(uid)
-        viewModel = androidx.lifecycle.ViewModelProvider(this, factory)
-            .get(AmiiboDetailViewModel::class.java)
+        val uid = intent.getStringExtra("uid")
+        val isSim = intent.getBooleanExtra("isSimulationEnabled", false)
+
+        val factory = AmiiboDetailViewModelFactory(uid, isSim)
+        val viewModel = ViewModelProvider(this, factory)[AmiiboDetailViewModel::class.java]
 
         setContent {
             ScannerTheme {
-                AmiiboDetailScreen()
+                AmiiboDetailScreen(uid = uid, isSimulationEnabled = isSim)
             }
         }
     }

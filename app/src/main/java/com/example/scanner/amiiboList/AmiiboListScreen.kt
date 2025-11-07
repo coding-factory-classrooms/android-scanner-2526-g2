@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -31,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.scanner.Amiibo
 import com.example.scanner.amiiboDetail.AmiiboDetailActivity
+import io.paperdb.Paper
 
 
 @Composable
@@ -124,6 +126,7 @@ fun AmiiboCard(amiibo: Amiibo) {
             Text(text = amiibo.name, style = MaterialTheme.typography.bodyMedium)
             Text(text= amiibo.scannedTimestamp.toString())
         }
+        Button(onClick = { removeAmiibo(amiibo.uid) }) { }
     }
 }
 fun onAmiiboClick(uid: String, context: Context) {
@@ -133,6 +136,11 @@ fun onAmiiboClick(uid: String, context: Context) {
     context.startActivity(intent)
 }
 
+fun removeAmiibo(uid: String){
+    val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
+    list.removeAll { it.uid == uid }
+    Paper.book().write("amiibos", list)
+}
 
 //@Preview
 //@Composable

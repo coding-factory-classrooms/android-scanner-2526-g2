@@ -10,7 +10,7 @@ data class Amiibo (
     val image: String,
     val name: String,
     val release: String,
-    val uid: String,
+    var uid: String,
     var scannedTimestamp: String?,
 )
 

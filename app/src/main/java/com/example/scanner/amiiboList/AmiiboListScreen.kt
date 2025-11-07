@@ -1,5 +1,9 @@
 package com.example.scanner.amiiboList
 
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,33 +25,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.scanner.Amiibo
-import com.example.scanner.sampleAmiibos
-import java.sql.Timestamp
-import java.util.Date
+import com.example.scanner.amiiboDetail.AmiiboDetailActivity
 
 
 @Composable
-fun AmiiboListScreen(viewModel: AmiiboListViewModel) {
+fun AmiiboListScreen(viewModel: AmiiboListViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        println("MovieListScreen: LaunchedEffect")
         viewModel.loadAmiibos()
-    }
-
-
-    LaunchedEffect(uiState) {
-        if (uiState is AmiiboListUiState.Success) {
-            viewModel.loadAmiibos()
-        }
     }
 
     Scaffold { innerPadding ->
         Box(
+
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
@@ -56,6 +52,7 @@ fun AmiiboListScreen(viewModel: AmiiboListViewModel) {
         }
     }
 }
+
 
 @Composable
 fun AmiiboListBody(uiState: AmiiboListUiState) {
@@ -105,15 +102,16 @@ fun AmiiboListBody(uiState: AmiiboListUiState) {
 fun AmiiboList(amiibos: List<Amiibo>) {
     LazyColumn {
         items(amiibos) { amiibo ->
-            AmiiboCard(amiibo = amiibo)
+            AmiiboCard(amiibo)
         }
     }
 }
 
 @Composable
 fun AmiiboCard(amiibo: Amiibo) {
+    val context = LocalContext.current
     Row(
-        modifier = Modifier.padding(all = 16.dp),
+        modifier = Modifier.clickable(onClick = {onAmiiboClick(amiibo.uid, context)}).padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -127,6 +125,12 @@ fun AmiiboCard(amiibo: Amiibo) {
             Text(text= amiibo.scannedTimestamp.toString())
         }
     }
+}
+fun onAmiiboClick(uid: String, context: Context) {
+    Log.d("CLICK", "Clickable")
+    val intent = Intent(context, AmiiboDetailActivity::class.java)
+    intent.putExtra("uid", uid)
+    context.startActivity(intent)
 }
 
 

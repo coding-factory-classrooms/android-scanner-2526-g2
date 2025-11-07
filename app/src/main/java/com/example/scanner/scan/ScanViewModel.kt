@@ -64,6 +64,7 @@ class ScanViewModel : ViewModel() {
     }
 
     fun fetchAmiibo(uid: String) {
+        val amiiboUid = uid
         val call = api.getAmiiboById(uid)
             call.enqueue(object : Callback<Amiibo>{
                 override fun onResponse(
@@ -73,31 +74,22 @@ class ScanViewModel : ViewModel() {
 
                     var amiibo: Amiibo? = response.body()
                     _amiiboState.value = amiibo
-                    Log.d("Amiibo", amiibo?.name.toString())
+                    Log.d("DEBUG", amiibo?.name.toString())
                     val list = Paper.book().read("amiibos", arrayListOf<Amiibo>())
                     if (amiibo != null && list != null ){
                         val time = Calendar.getInstance().time
                         val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm").format(time)
-                        Log.d("Debug", timestamp)
                         amiibo.scannedTimestamp = timestamp
+                        amiibo.uid=amiiboUid
                         list.add(amiibo)
                         Paper.book().write("amiibos", list)
                     }
                 }
 
-                override fun onFailure(
-                    call: Call<Amiibo?>,
-                    t: Throwable
-                ) {
+                override fun onFailure(call: Call<Amiibo>, t: Throwable) {
                     _amiiboState.value = null
-                    Log.e("Amiibo", "Error: failed to load db")
+                    Log.e("Amiibo", "Erreur API : ${t.message}", t)
                 }
-            }
-
-            override fun onFailure(call: Call<Amiibo>, t: Throwable) {
-                _amiiboState.value = null
-                Log.e("Amiibo", "Erreur API : ${t.message}", t)
-            }
         })
     }
 }

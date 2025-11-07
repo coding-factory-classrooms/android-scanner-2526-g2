@@ -35,8 +35,7 @@ class ScanActivity : ComponentActivity(), NfcAdapter.ReaderCallback {
 
         setContent {
             ScannerTheme {
-                //ScanScreen(viewModel)
-                AmiiboListScreen(viewModel = AmiiboListViewModel())
+                AmiiboListScreen()
             }
         }
     }

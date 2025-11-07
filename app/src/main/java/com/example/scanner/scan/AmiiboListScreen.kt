@@ -1,4 +1,4 @@
-package com.example.scanner.amiiboList
+package com.example.scanner.scan
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,21 +26,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.scanner.Amiibo
 import com.example.scanner.amiiboDetail.AmiiboDetailActivity
-import io.paperdb.Paper
 
 
 @Composable
-fun AmiiboListScreen(viewModel: AmiiboListViewModel = viewModel()) {
+fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
-
     LaunchedEffect(Unit) {
         viewModel.loadAmiibos()
     }
@@ -57,7 +61,7 @@ fun AmiiboListScreen(viewModel: AmiiboListViewModel = viewModel()) {
 
 
 @Composable
-fun AmiiboListBody(uiState: AmiiboListUiState) {
+fun AmiiboListBody(uiState: AmiiboListUiState, ) {
     when (uiState) {
         is AmiiboListUiState.Loading ->
             Column(
@@ -102,7 +106,9 @@ fun AmiiboListBody(uiState: AmiiboListUiState) {
 
 @Composable
 fun AmiiboList(amiibos: List<Amiibo>) {
-    LazyColumn {
+    LazyColumn(
+        modifier= Modifier.fillMaxSize()
+    ) {
         items(amiibos) { amiibo ->
             AmiiboCard(amiibo)
         }
@@ -110,15 +116,16 @@ fun AmiiboList(amiibos: List<Amiibo>) {
 }
 
 @Composable
-fun AmiiboCard(amiibo: Amiibo) {
+fun AmiiboCard(amiibo: Amiibo, viewModel: ScanViewModel = viewModel()) {
     val context = LocalContext.current
     Row(
-        modifier = Modifier.clickable(onClick = {onAmiiboClick(amiibo.uid, context)}).padding(all = 16.dp),
+        modifier = Modifier.clickable(onClick = {onAmiiboClick(amiibo.uid, context)}).fillMaxWidth().padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = amiibo.image,
             contentDescription = "",
+            modifier = Modifier.size(75.dp,120.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
@@ -126,7 +133,7 @@ fun AmiiboCard(amiibo: Amiibo) {
             Text(text = amiibo.name, style = MaterialTheme.typography.bodyMedium)
             Text(text= amiibo.scannedTimestamp.toString())
         }
-        Button(onClick = { removeAmiibo(amiibo.uid) }) { }
+        Button(onClick = { viewModel.removeAmiibo(amiibo.uid) }) { }
     }
 }
 fun onAmiiboClick(uid: String, context: Context) {
@@ -136,11 +143,6 @@ fun onAmiiboClick(uid: String, context: Context) {
     context.startActivity(intent)
 }
 
-fun removeAmiibo(uid: String){
-    val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
-    list.removeAll { it.uid == uid }
-    Paper.book().write("amiibos", list)
-}
 
 //@Preview
 //@Composable

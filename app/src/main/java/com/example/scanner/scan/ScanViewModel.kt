@@ -113,11 +113,20 @@
             })
         }
 
-        fun loadAmiibos() {
+    fun loadAmiibos() {
+        try {
+            uiState.value = AmiiboListUiState.Loading
 
-            try {
-                uiState.value = AmiiboListUiState.Loading
-                val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
+
+            if (isSimulationEnabled) {
+                uiState.value = AmiiboListUiState.Success(
+                    amiibos = ArrayList(com.example.scanner.sampleAmiibos)
+                )
+                return
+            }
+
+
+            val list = Paper.book().read("amiibos", arrayListOf<Amiibo>()) ?: arrayListOf()
 
                 uiState.value = when {
                     list.isEmpty() -> AmiiboListUiState.Empty
@@ -130,6 +139,7 @@
 
             amiibosFLow.value = sampleAmiibos;
         }
+    }
 
 
         fun removeAmiibo(uid: String){

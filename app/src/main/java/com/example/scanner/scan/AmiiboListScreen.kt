@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,14 +46,39 @@ import com.example.scanner.amiiboDetail.AmiiboDetailActivity
 fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    val isSimEnabled = remember { mutableStateOf(viewModel.isSimulationEnabled) }
 
     LaunchedEffect(Unit) {
         viewModel.loadAmiibos()
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Simulation",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Switch(
+                    checked = isSimEnabled.value,
+                    onCheckedChange = { checked ->
+                        isSimEnabled.value = checked
+                        viewModel.isSimulationEnabled = checked
+                        viewModel.loadAmiibos()
+                        Log.d("SimulationMode", "Simulation activée = $checked")
+                    }
+                )
+            }
+        }
+    ) { innerPadding ->
         Box(
-
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
@@ -61,6 +87,7 @@ fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
         }
     }
 }
+
 
 
 @Composable
@@ -139,11 +166,17 @@ fun AmiiboCard(amiibo: Amiibo, viewModel: ScanViewModel = viewModel()) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
-            .clickable(onClick = { onAmiiboClick(amiibo.uid, context) })
+            .clickable(onClick = {
+                val intent = Intent(context, AmiiboDetailActivity::class.java)
+                intent.putExtra("uid", amiibo.uid)
+                intent.putExtra("isSimulationEnabled", viewModel.isSimulationEnabled)
+                context.startActivity(intent)
+            })
+
             .fillMaxWidth()
             .padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically
-    ) {
+    )  {
         AsyncImage(
             model = amiibo.image,
             contentDescription = "",

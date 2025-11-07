@@ -20,4 +20,5 @@ val sampleAmiibos = listOf(
     Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
     Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
     Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
+
 )

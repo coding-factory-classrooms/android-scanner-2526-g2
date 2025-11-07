@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,13 +17,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.scanner.Amiibo
 
 
 @Composable
-fun AmiiboDetailScreen(viewModel: AmiiboDetailViewModel = viewModel()){
+fun AmiiboDetailScreen(
+    uid: String?,
+    isSimulationEnabled: Boolean = false
+) {
+    val viewModel: AmiiboDetailViewModel = viewModel(
+        factory = AmiiboDetailViewModelFactory(uid, isSimulationEnabled)
+    )
+
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -31,7 +40,6 @@ fun AmiiboDetailScreen(viewModel: AmiiboDetailViewModel = viewModel()){
 
     Scaffold { innerPadding ->
         Column(
-
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
@@ -55,7 +63,7 @@ fun AmiiboDetailBody(uiState: AmiiboDetailUiState) {
         }
 
         is AmiiboDetailUiState.Success -> Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top
         ) {
             AmiiboDetail(amiibo = uiState.amiibo)
@@ -74,15 +82,20 @@ fun AmiiboDetailBody(uiState: AmiiboDetailUiState) {
 
 @Composable
 fun AmiiboDetail(amiibo: Amiibo?) {
-    Column() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement= Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AsyncImage(
             model = amiibo?.image,
             contentDescription = "",
+            modifier = Modifier.size(200.dp,300.dp)
         )
-        Text(text = amiibo?.name.toString(), style = MaterialTheme.typography.bodyMedium)
-        Text(text = amiibo?.gameSeries.toString(), style = MaterialTheme.typography.titleSmall)
-        Text(text = amiibo?.character.toString(), style = MaterialTheme.typography.titleSmall)
-        Text(text = amiibo?.gameSeries.toString(), style = MaterialTheme.typography.titleSmall)
-        Text(text = amiibo?.release.toString(), style = MaterialTheme.typography.titleSmall)
+        Text(text = "Amiibo Name: " + amiibo?.name.toString(), style = MaterialTheme.typography.bodyMedium)
+        Text(text = "Game Series: " + amiibo?.gameSeries.toString(), style = MaterialTheme.typography.titleSmall)
+        Text(text = "Character: " + amiibo?.character.toString(), style = MaterialTheme.typography.titleSmall)
+        Text(text = "Game Series: " + amiibo?.gameSeries.toString(), style = MaterialTheme.typography.titleSmall)
+        Text(text = "Release Date: " +amiibo?.release.toString(), style = MaterialTheme.typography.titleSmall)
     }
 }

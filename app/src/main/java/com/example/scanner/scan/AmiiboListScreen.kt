@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
@@ -44,10 +45,10 @@ import com.example.scanner.amiiboDetail.AmiiboDetailActivity
 @Composable
 fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
     val isSimEnabled = remember { mutableStateOf(viewModel.isSimulationEnabled) }
 
-
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.loadAmiibos()
     }
 
@@ -82,7 +83,7 @@ fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
                 .padding(innerPadding)
                 .fillMaxSize(),
         ) {
-            AmiiboListBody(uiState)
+            AmiiboListBody(uiState, searchQuery) { newValue -> searchQuery = newValue }
         }
     }
 }
@@ -90,7 +91,7 @@ fun AmiiboListScreen(viewModel: ScanViewModel = viewModel()) {
 
 
 @Composable
-fun AmiiboListBody(uiState: AmiiboListUiState, ) {
+fun AmiiboListBody(uiState: AmiiboListUiState, searchQuery: String, onSearchChange: (String) -> Unit,) {
     when (uiState) {
         is AmiiboListUiState.Loading ->
             Column(
@@ -108,7 +109,23 @@ fun AmiiboListBody(uiState: AmiiboListUiState, ) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Top
             ) {
-                AmiiboList(amiibos = uiState.amiibos)
+                    // Barre de recherche
+                    androidx.compose.material3.TextField(
+                        value = searchQuery,
+                        onValueChange = onSearchChange,
+                        placeholder = { Text("Rechercher un amiibo...") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    )
+
+                // Résultats
+                val filteredList = uiState.amiibos.filter {
+                    it.name.contains(searchQuery.trim(), ignoreCase = true) ||
+                            it.gameSeries.contains(searchQuery.trim(), ignoreCase = true)
+                }
+
+                AmiiboList(amiibos = filteredList)
             }
 
         is AmiiboListUiState.Empty ->
@@ -155,6 +172,7 @@ fun AmiiboCard(amiibo: Amiibo, viewModel: ScanViewModel = viewModel()) {
                 intent.putExtra("isSimulationEnabled", viewModel.isSimulationEnabled)
                 context.startActivity(intent)
             })
+
             .fillMaxWidth()
             .padding(all = 16.dp),
         verticalAlignment = Alignment.CenterVertically

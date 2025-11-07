@@ -16,8 +16,9 @@ data class Amiibo (
 
 
 val sampleAmiibos = listOf(
-    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 13:43::23"),
-    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2024-09-03 11:12::23"),
-    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2023-02-19 08:12::09"),
-    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-04-22 21:23::10"),
+    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774", "2025-11-06 05-20::55"),
+    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
+    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
+    Amiibo("Super Smash Bros","Marth","Fire Emblem","https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_01000000-034e0902.png", "Marth","2014-09-17", "044FB774","2025-11-06 05-20::55"),
+
 )

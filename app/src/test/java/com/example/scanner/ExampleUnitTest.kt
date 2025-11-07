@@ -1,7 +1,9 @@
 package com.example.scanner
 
+import app.cash.turbine.test
+import junit.framework.TestCase
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
@@ -14,4 +16,6 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+
 }

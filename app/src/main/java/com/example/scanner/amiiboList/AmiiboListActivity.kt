@@ -11,7 +11,7 @@ class AmiiboListActivity: ComponentActivity() {
         super.onCreate(savedInstanceState, persistentState)
         setContent {
             ScannerTheme{
-                AmiiboListScreen(viewModel = AmiiboListViewModel())
+                AmiiboListScreen()
             }
         }
     }

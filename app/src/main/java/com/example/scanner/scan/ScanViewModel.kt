@@ -1,5 +1,6 @@
 package com.example.scanner.scan
 
+import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.MifareUltralight
@@ -65,7 +66,7 @@ class ScanViewModel : ViewModel() {
 
     fun fetchAmiibo(uid: String) {
         val amiiboUid = uid
-        val call = api.getAmiiboById(uid)
+            val call = api.getAmiiboById(uid)
             call.enqueue(object : Callback<Amiibo>{
                 override fun onResponse(
                     call: Call<Amiibo?>,
